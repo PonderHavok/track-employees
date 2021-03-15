@@ -320,16 +320,22 @@ function addDepart() {
         {
           type: "input",
           message: "What department would you like to add?",
+          choices: departArr,
           name: "depart",
         },
       ])
       .then(function (answer) {
+        for (i = 0; i < departArr.length; i++) {
+          if (answer.depart == departArr[i].name) {
+            depart = departArr[i].id;
+          }
+        }
         connection.query(
           "INSERT INTO department (name) VALUES (?)",
           [answer.depart],
           function (err, res) {
             if (err) throw err;
-            console.table(res + "Department Added");
+            console.table("Department Added");
             runSearch();
           }
         );
@@ -354,12 +360,6 @@ function addEmployee() {
         type: "input",
         message: "What is employee's last name?",
         name: "last_name",
-      },
-      {
-        type: "list",
-        message: "Who is their manager",
-        choices: managerArr,
-        name: "manager",
       },
     ])
     .then(function (answer) {
@@ -420,7 +420,7 @@ function addRole() {
         [answer.role, answer.salary, depart],
         function (err, res) {
           if (err) throw err;
-          console.log(res + "Role Created");
+          console.log("Role Created");
           runSearch();
         }
       );
@@ -464,17 +464,12 @@ function deleteDepart() {
         },
       ])
       .then(function (answer) {
-        for (i = 0; i < departArr.length; i++) {
-          if (answer.departmentShutdown == departArr[i].name) {
-            departID = departArr[i].id;
-          }
-        }
-        connection.query(
+          connection.query(
           "DELETE FROM department WHERE id= ?",
-          [departID],
+          [answer.departID],
           function (err, res) {
             if (err) throw err;
-            console.table(res + "Department Dismissed");
+            console.table("Department Dismissed");
             runSearch();
           }
         );
@@ -488,13 +483,13 @@ function deleteEmploy() {
         type: "list",
         message: "Which employee would you like to let go?",
         choices: employeeArr,
-        name: "fired",
+        name: "canned",
       },
     ])
     .then(function (answer) {
       connection.query(
         "DELETE FROM employee WHERE last_name= ?",
-        [answer.fired],
+        [answer.canned],
         function (err, res) {
           if (err) throw err;
           console.table("deleted employee");
@@ -515,14 +510,9 @@ function deleteRole() {
       },
     ])
     .then(function (answer) {
-      for (i = 0; i < roleArr.length; i++) {
-        if (answer.roleRemoval == roleArr[i].name) {
-          roleID = roleArr[i].id;
-        }
-      }
-      connection.query(
+        connection.query(
         "DELETE FROM role WHERE id= ?",
-        [roleID],
+        [answer.roleID],
         function (err, res) {
           if (err) throw err;
           console.table("Role Removed");
